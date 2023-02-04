@@ -26,11 +26,12 @@ app.use(xss());
 //routers
 const userRouter = require("./routes/user");
 const postRouter = require("./routes/post");
-// const orderRouter = require("./routes/orders");
+const chatRouter = require("./routes/chat");
 
 //routes
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/posts", postRouter);
+app.use("/api/v1/chats", chatRouter);
 // app.use("/api/v1/orders", orderRouter);
 
 app.use(errorHandlerMiddleware);

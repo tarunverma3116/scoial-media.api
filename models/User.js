@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const PostSchema = require("./Post");
+const Chat = require("./Chat");
 mongoose.set("strictQuery", false);
 
 const UserSchema = new mongoose.Schema(
@@ -38,6 +38,10 @@ const UserSchema = new mongoose.Schema(
     },
     following: {
       type: Array,
+      default: [],
+    },
+    chats: {
+      type: [Chat.Schema],
       default: [],
     },
   },
