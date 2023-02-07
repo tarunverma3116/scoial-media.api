@@ -44,14 +44,28 @@ const createChat = async (req, res) => {
 const getChats = async (req, res) => {
   try {
     const { _id } = req.payload;
-    const chats = await Chat.find({
-      members: { $in: [_id] },
+    const { id } = req.params;
+    const chat = await Chat.findOne({
+      members: { $all: [_id, id] },
     });
-    res.status(200).json({
-      success: true,
-      message: "Chats Found",
-      data: chats,
-    });
+    if (chat) {
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: "Chat found",
+        data: chat,
+      });
+    } else {
+      const chat = await Chat.create({
+        members: [_id, id],
+        conversation: [],
+      });
+      await chat.save();
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: "Chat created",
+        data: chat,
+      });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json(error);

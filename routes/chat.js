@@ -5,6 +5,6 @@ const authenticate = require("../middleware/authentication");
 const { createChat, getChats } = require("../services/chatService");
 
 router.route("/create").post(authenticate, createChat);
-router.route("/").get(authenticate, getChats);
+router.route("/:id").get(authenticate, getChats);
 
 module.exports = router;
