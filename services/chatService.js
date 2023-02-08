@@ -7,20 +7,27 @@ const createChat = async (req, res) => {
     const { _id } = req.payload;
     const { id } = req.params;
     const { message } = req.body;
-    const sender = User.findById(_id);
-    const receiver = User.findById(id);
+    const sender = await User.findById(_id);
+    const receiver = await User.findById(id);
+    console.log(sender, receiver);
     const chat = await Chat.findOne({
       members: { $all: [_id, id] },
     });
+    console.log(chat);
     if (chat) {
       chat.conversation.push({
         senderId: _id,
         text: message,
       });
       await chat.save();
+      console.log(chat);
       if (!sender.chats.includes(chat._id)) sender.chats.push(chat._id);
       if (!receiver.chats.includes(chat._id)) receiver.chats.push(chat._id);
-      return res.status(StatusCodes.OK).json(chat);
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: "Chat found and updated",
+        data: chat,
+      });
     } else {
       const newChat = await Chat.create({
         members: [_id, id],
@@ -33,7 +40,11 @@ const createChat = async (req, res) => {
       });
       if (!sender.chats.includes(chat._id)) sender.chats.push(chat._id);
       if (!receiver.chats.includes(chat._id)) receiver.chats.push(chat._id);
-      return res.status(StatusCodes.OK).json(newChat);
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: "Chat created",
+        data: newChat,
+      });
     }
   } catch (error) {
     console.log(error);
